@@ -16,7 +16,12 @@ var admin =require('./routes/admin');
 
 var app = express();
 var EventEmitter = require('events').EventEmitter;
+/**
+ * 全局变量
+ * @type {*|EventEmitter}
+ */
 messageEvents = new EventEmitter();
+APP_PATH=__dirname;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

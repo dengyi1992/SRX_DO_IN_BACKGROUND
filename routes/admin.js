@@ -2,8 +2,10 @@ var express = require('express');
 var database_info = require('../admin/database_info.js');
 var tasksetting = require('../admin/tasksetting.js');
 var login_admin = require('../admin/login_admin.js');
+var upload = require('../admin/upload.js');
 var router = express.Router();
-
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -16,4 +18,7 @@ router.get('/databaseinfo',database_info.databaseinfo);
 router.post('/tasksetting',tasksetting.tasksetting);
 //登录
 router.post('/adminlogin',login_admin.admin_login);
+//上传
+router.get('/upload',upload.upload);
+router.post('/uploadfile',multipartMiddleware,upload.uploadfile);
 module.exports = router;

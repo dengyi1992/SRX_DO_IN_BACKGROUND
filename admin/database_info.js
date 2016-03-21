@@ -13,9 +13,7 @@ var conn = mysql.createConnection({
 });
 conn.connect();
 /* post users listing. */
-router.use(bodyParser.urlencoded({
-  extended: true
-}));
+
 exports.databaseinfo=function(req, res, next) {
   var  selectTableInfo = 'SELECT * FROM TABLES where TABLE_SCHEMA=\'srx\'';
   conn.query(selectTableInfo,function(err, rows, fields){

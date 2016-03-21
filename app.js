@@ -4,11 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+/**
+ * 路由
+ * @type {router|exports|module.exports}
+ */
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var crawler = require('./routes/crawler');
 var api = require('./routes/api');
+var admin =require('./routes/admin');
+
 var app = express();
 var EventEmitter = require('events').EventEmitter;
 messageEvents = new EventEmitter();
@@ -30,7 +35,8 @@ app.use('/users', users);
 app.use('/crawler',crawler);
 //接口提供
 app.use('/api',api);
-
+//admin
+app.use('/admin',admin);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

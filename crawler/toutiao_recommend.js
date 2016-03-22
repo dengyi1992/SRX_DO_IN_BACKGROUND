@@ -11,6 +11,7 @@ var myEvents = new EventEmitter();
 var mysql = require('mysql');
 var http = require('http');
 var fs = require('fs');
+var CheckUtils = require('../utils/CheckUtils.js');
 var conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -24,7 +25,7 @@ conn.connect();
 var options = {
     method: 'GET',
     encoding: null,
-    url:'http://m.toutiao.com/list/?tag=__all__&ac=wap&item_type=4&count=40&format=json&list_data_v2=1'
+    url: 'http://m.toutiao.com/list/?tag=__all__&ac=wap&item_type=4&count=40&format=json&list_data_v2=1'
 };
 
 
@@ -45,20 +46,23 @@ exports.toutiao = function (req, res, next) {
     function acquireData(data) {
         var $ = cheerio.load(data);  //cheerio解析data
         var link = $('section').toArray();
-        link.forEach(function(item){
-            if(item.attribs.class=="middle_mode has_action")
-            {
+        link.forEach(function (item) {
+            if (item.attribs.class == "middle_mode has_action") {
+                var title='';
                 /**
                  * middle_mode has_action
                  */
+                if (!CheckUtils.ifUndefined(item.children["3"].children["1"])) {
+                    title=item.children["3"].children["1"].children["1"].children["0"].data;
+                }
 
                 items.push({
-                    class:item.attribs.class,
-                    "data-group-id":item.attribs["data-group-id"],
-                    "data-is-video":item.attribs["data-is-video"],
-                    "data-item-id":item.attribs["data-item-id"],
-                    "hot-time":item.attribs["hot-time"],
-                    "title":""
+                    class: item.attribs.class,
+                    "data-group-id": item.attribs["data-group-id"],
+                    "data-is-video": item.attribs["data-is-video"],
+                    "data-item-id": item.attribs["data-item-id"],
+                    "hot-time": item.attribs["hot-time"],
+                    "title": title
                 });
             }
 

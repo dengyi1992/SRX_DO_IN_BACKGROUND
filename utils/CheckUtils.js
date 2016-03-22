@@ -8,3 +8,6 @@ exports.ifUndefined=function(value){
       return false;
   }
 };
+exports.toutiaoUtil=function(value){
+    return (value==undefined)?null:value;
+};

@@ -1,6 +1,6 @@
 /**
- * 任意头条号爬取
- * @type {*|exports|module.exports}
+ *任意头条号爬取
+ *@type {*|exports|module.exports}
  */
 var express = require('express');
 var router = express.Router();
@@ -25,11 +25,11 @@ conn.connect();
 var options = {
     method: 'GET',
     encoding: null,
-    url: 'http://m.toutiao.com/list/?tag=__all__&ac=wap&item_type=4&count=40&format=json&list_data_v2=1'
+    url: 'http://toutiao.com/api/article/recent/?source=2&count=40&category=__all__&utm_source=toutiao&offset=0&_=1458652810535'
 };
 
 
-/* GET users listing. */
+/GET users listing. */
 exports.toutiao = function (req, res, next) {
     var items = [];
     var timestamp = (new Date()).valueOf();
@@ -39,34 +39,71 @@ exports.toutiao = function (req, res, next) {
             //var result = iconv.convert(new Buffer(body, 'binary')).toString();
             //console.log(result);
 
-            acquireData(JSON.parse(body).html.toString());
+            acquireData(JSON.parse(body));
         }
     });
 
     function acquireData(data) {
-        var $ = cheerio.load(data);  //cheerio解析data
-        var link = $('section').toArray();
-        link.forEach(function (item) {
-            if (item.attribs.class == "middle_mode has_action") {
-                var title='';
-                /**
-                 * middle_mode has_action
-                 */
-                if (!CheckUtils.ifUndefined(item.children["3"].children["1"])) {
-                    title=item.children["3"].children["1"].children["1"].children["0"].data;
-                }
 
-                items.push({
-                    class: item.attribs.class,
-                    "data-group-id": item.attribs["data-group-id"],
-                    "data-is-video": item.attribs["data-is-video"],
-                    "data-item-id": item.attribs["data-item-id"],
-                    "hot-time": item.attribs["hot-time"],
-                    "title": title
-                });
-            }
+
+        data.data.forEach(function (item) {
+
+            items.push({
+                abstract: CheckUtils.toutiaoUtil(item.abstract),
+                image_list: CheckUtils.toutiaoUtil(item.image_list),
+                datetime: CheckUtils.toutiaoUtil(item.datetime),
+                article_type: CheckUtils.toutiaoUtil(item.article_type),
+                more_mode: CheckUtils.toutiaoUtil(item.more_mode),
+                tag: CheckUtils.toutiaoUtil(item.tag),
+                is_favorite: CheckUtils.toutiaoUtil(item.is_favorite),
+                has_m3u8_video: CheckUtils.toutiaoUtil(item.has_m3u8_video),
+                keywords: CheckUtils.toutiaoUtil(item.keywords),
+                has_mp4_video: CheckUtils.toutiaoUtil(item.has_mp4_video),
+                favorite_count: CheckUtils.toutiaoUtil(item.favorite_count),
+                display_url: CheckUtils.toutiaoUtil(item.display_url),
+                article_sub_type: CheckUtils.toutiaoUtil(item.article_sub_type),
+                bury_count: CheckUtils.toutiaoUtil(item.bury_count),
+                title: CheckUtils.toutiaoUtil(item.title),
+                has_video: CheckUtils.toutiaoUtil(item.has_video),
+                share_url: CheckUtils.toutiaoUtil(item.share_url),
+                id: CheckUtils.toutiaoUtil(item.id),
+                source: CheckUtils.toutiaoUtil(item.source),
+                comment_count: CheckUtils.toutiaoUtil(item.comment_count),
+                article_url: CheckUtils.toutiaoUtil(item.article_url),
+                create_time: CheckUtils.toutiaoUtil(item.create_time),
+                recommend: CheckUtils.toutiaoUtil(item.recommend),
+                middle_mode: CheckUtils.toutiaoUtil(item.middle_mode),
+                aggr_type: CheckUtils.toutiaoUtil(item.aggr_type),
+                item_source_url: CheckUtils.toutiaoUtil(item.item_source_url),
+                display_time: CheckUtils.toutiaoUtil(item.display_time),
+                publish_time: CheckUtils.toutiaoUtil(item.publish_time),
+                go_detail_count: CheckUtils.toutiaoUtil(item.go_detail_count),
+                display_title: CheckUtils.toutiaoUtil(item.display_title),
+                item_seo_url: CheckUtils.toutiaoUtil(item.item_seo_url),
+                tag_id: CheckUtils.toutiaoUtil(item.tag_id),
+                source_url: CheckUtils.toutiaoUtil(item.source_url),
+                large_mode: CheckUtils.toutiaoUtil(item.large_mode),
+                item_id: CheckUtils.toutiaoUtil(item.item_id),
+                is_digg: CheckUtils.toutiaoUtil(item.is_digg),
+                seo_url: CheckUtils.toutiaoUtil(item.seo_url),
+                repin_count: CheckUtils.toutiaoUtil(item.repin_count),
+                url: CheckUtils.toutiaoUtil(item.url),
+                level: CheckUtils.toutiaoUtil(item.level),
+                digg_count: CheckUtils.toutiaoUtil(item.digg_count),
+                behot_time: CheckUtils.toutiaoUtil(item.behot_time),
+                hot: CheckUtils.toutiaoUtil(item.hot),
+                preload_web: CheckUtils.toutiaoUtil(item.preload_web),
+                comments_count: CheckUtils.toutiaoUtil(item.comments_count),
+                has_image: CheckUtils.toutiaoUtil(item.has_image),
+                is_bury: CheckUtils.toutiaoUtil(item.is_bury),
+                group_id: CheckUtils.toutiaoUtil(item.group_id)
+
+
+            });
 
         });
+
+
         res.send(items);
     };
 
@@ -75,7 +112,7 @@ myEvents.on('geted', function (items) {
     //寫入數據庫
     for (var i = 0; i < items.length; i++) {
         var userAddSql_Params = '';
-        var userAddSql = ''
+        var userAddSql = '';
         if (items[i].imgnums == 1) {
             userAddSql_Params = [items[i].title, items[i].link, items[i].imgurl];
             userAddSql = 'INSERT INTO toutiao' + tablename + ' (title,url,imgnums,imgurl) VALUES(?,?,1,?)';

@@ -8,6 +8,7 @@ var neihan = require('../crawler/neihan.js');
 var budejie = require('../crawler/budejie.js');
 var intime = require('../crawler/intime.js');
 var toutiao_common = require('../crawler/toutiao_common.js');
+var toutiao_recommend = require('../crawler/toutiao_recommend.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -37,5 +38,9 @@ router.get('/intime',intime.intime);
 // agenum 第几页
 // tablename 存入的数据库的表名称
 router.get('/toutiao_common',toutiao_common.toutiao_common);
+
+
+router.get('/toutiao_recommend',toutiao_recommend.toutiao);
+
 
 module.exports = router;

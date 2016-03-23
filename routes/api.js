@@ -4,6 +4,7 @@ var neihan = require('../api/neihan.js');
 var qiubai = require('../api/qiubai.js');
 var recommend = require('../api/recommend.js');
 var toutiao = require('../api/toutiao.js');
+var yidian = require('../api/yidian.js');
 var router = express.Router();
 
 
@@ -26,5 +27,6 @@ router.get('/toutiao',toutiao.toutiaoapi);
 
 //头条v2
 router.get('/toutiaov2',toutiao.toutiaov2);
-
+//一点
+router.get('/yidian',yidian.yidian);
 module.exports = router;

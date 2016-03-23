@@ -4,6 +4,8 @@ var http = require("http");
 var mysql = require('mysql');
 var http = require('http');
 var fs = require('fs');
+var config = require('../config.js');
+var CheckUtils = require('../utils/CheckUtils.js');
 var conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -44,6 +46,33 @@ exports.toutiaoapi=function (req, res, next) {
 
         return res.jsonp(result);
     });
+
+
+};
+exports.toutiaov2=function(req,res,next){
+    if (CheckUtils.ifUndefined(req.query.type)){
+        res.json(config.err_params);
+        return;
+    }
+    var tablename="toutiao_"+req.query.type;
+    var selectString="SELECT * FROM "+tablename+" ORDER BY id desc limit 20";
+    conn.query(selectString,function(err,rows,fields){
+       if (err){
+           res.json(config.err_database);
+
+       }else {
+           var data = [];
+           for (var i = 0; i < rows.length; i++) {
+               data.push({
+                   data: JSON.parse(rows[i].jsonString)
+
+               });
+           }
+           res.json({msg:'success',content:'成功',data:data});
+       }
+    });
+
+
 
 
 };

@@ -24,4 +24,7 @@ router.get('/recommend',recommend.recommendapi);
 //tablename
 router.get('/toutiao',toutiao.toutiaoapi);
 
+//头条v2
+router.get('/toutiaov2',toutiao.toutiaov2);
+
 module.exports = router;

@@ -124,7 +124,14 @@ var config = {
     create_post_per_day: 1000, // 每个用户一天可以发的主题数
     create_reply_per_day: 1000, // 每个用户一天可以发的评论数
     visit_per_day: 1000, // 每个 ip 每天能访问的次数
-    toutiao_api_url:"http://toutiao.com/api/article/recent/?source=2&count=20&utm_source=toutiao&offset=0"
+    toutiao_api_url: "http://toutiao.com/api/article/recent/?source=2&count=20&utm_source=toutiao&offset=0",
+
+    /**
+     * 错误
+     */
+    err_params: {msg: "err_params", content: "参数错误"},
+    err_database: {msg: "err_database", content: "数据库错误"}
+
 };
 
 if (process.env.NODE_ENV === 'test') {

@@ -12,8 +12,8 @@ var mysql = require('mysql');
 var http = require('http');
 var fs = require('fs');
 var conn = mysql.createConnection({
-    host: '120.27.41.245',
-    user: 'srx',
+    host: 'localhost',
+    user: 'root',
     password: 'dengyi',
     database: 'srx',
     port: 3306

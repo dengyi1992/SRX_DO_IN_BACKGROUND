@@ -12,6 +12,7 @@ var mysql = require('mysql');
 var http = require('http');
 var fs = require('fs');
 var CheckUtils = require('../utils/CheckUtils.js');
+var config = require('../config.js');
 var conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -22,17 +23,23 @@ var conn = mysql.createConnection({
 conn.connect();
 
 
-var options = {
-    method: 'GET',
-    encoding: null,
-    url: 'http://toutiao.com/api/article/recent/?source=2&count=40&category=__all__&utm_source=toutiao&offset=0&_=1458652810535'
-};
-
+var typesname = "&category=";
+var typeslast = "news_entertainment";
 
 /GET users listing. */
 exports.toutiao = function (req, res, next) {
+    if (CheckUtils.ifUndefined(req.query.type)){
+        res.json({msg:"err_params",content:"参数错误"});
+        return;
+    }
+    typeslast=req.query.type;
+    var options = {
+        url: config.toutiao_api_url + typesname + typeslast,
+        method: 'GET',
+        encoding: null
+
+    };
     var items = [];
-    var timestamp = (new Date()).valueOf();
     request(options, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             //返回请求页面的HTML
@@ -105,26 +112,28 @@ exports.toutiao = function (req, res, next) {
 
 
         res.send(items);
+        myEvents.emit('geted', items);
     };
 
 };
 myEvents.on('geted', function (items) {
+    var tableCreate = "CREATE TABLE IF NOT EXISTS toutiao_" + typeslast + " LIKE toutiao_model"
+
+    conn.query(tableCreate, function (err, result) {
+        console.log(err);
+    });
     //寫入數據庫
     for (var i = 0; i < items.length; i++) {
-        var userAddSql_Params = '';
-        var userAddSql = '';
-        if (items[i].imgnums == 1) {
-            userAddSql_Params = [items[i].title, items[i].link, items[i].imgurl];
-            userAddSql = 'INSERT INTO toutiao' + tablename + ' (title,url,imgnums,imgurl) VALUES(?,?,1,?)';
-        } else {
-            userAddSql_Params = [items[i].title, items[i].link, items[i].imgurl1, items[i].imgurl2, items[i].imgurl3];
-            userAddSql = 'INSERT INTO toutiao' + tablename + ' (title,url,imgnums,imgurl1,imgurl2,imgurl3) VALUES(?,?,3,?,?,?)';
 
-        }
+        var itemAddSql_Params = '';
+        var itemAddSql = '';
+        itemAddSql_Params = [items[i].title, items[i].abstract, items[i].keywords, JSON.stringify(items[i])];
+        itemAddSql = 'INSERT INTO toutiao_' + typeslast + '(title,abstract,keywords,jsonString) VALUES(?,?,?,?)';
 
 
-        conn.query(userAddSql, userAddSql_Params, function (err, result) {
+        conn.query(itemAddSql, itemAddSql_Params, function (err, result) {
             if (err) {
+                console.log(err);
                 return;
             }
         });

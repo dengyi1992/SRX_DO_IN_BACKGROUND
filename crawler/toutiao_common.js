@@ -87,7 +87,7 @@ myEvents.on('geted', function (items) {
     //寫入數據庫
     for (var i = 0; i < items.length; i++) {
         var userAddSql_Params='';
-        var userAddSql=''
+        var userAddSql='';
         if (items[i].imgnums==1){
             userAddSql_Params= [items[i].title, items[i].link,items[i].imgurl];
             userAddSql = 'INSERT INTO toutiao'+tablename+' (title,url,imgnums,imgurl) VALUES(?,?,1,?)';

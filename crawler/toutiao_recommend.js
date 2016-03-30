@@ -27,15 +27,15 @@ var typeslast = "news_entertainment";
 
 /GET users listing. */
 exports.toutiao = function (req, res, next) {
-    if (CheckUtils.ifUndefined(req.query.type)){
-        res.json({msg:"err_params",content:"参数错误"});
+    if (CheckUtils.ifUndefined(req.query.type)) {
+        res.json({msg: "err_params", content: "参数错误"});
         return;
     }
-    typeslast=req.query.type;
+    typeslast = req.query.type;
     var timestamp = (new Date()).valueOf();
 
     var options = {
-        url: config.toutiao_api_url + typesname + typeslast+"&_="+timestamp,
+        url: config.toutiao_api_url + typesname + typeslast + "&_=" + timestamp,
         method: 'GET',
         encoding: null
 

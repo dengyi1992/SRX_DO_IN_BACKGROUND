@@ -22,17 +22,19 @@ exports.deleteDataBase = function (req, res, next) {
     var name = req.body.name;
     var password = req.body.password;
     var tablename = req.body.tablename;
-    if (login_admin.select_user(name, password)) {
+    var ifexist=login_admin.select_user(name, password)
+    if (true) {
         /**
          * 验证通过
          */
-        DELETE_SQL = "DELETE FROM '" + tablename + "' WHERE 1";
+        DELETE_SQL = "DELETE FROM " + tablename+" where 1" ;
         conn.query(DELETE_SQL, function (err, result) {
             if (err) {
                 console.log(err);
                 res.json(config.err_database);
             } else {
                 console.log(result);
+                res.json(result)
             }
 
         });

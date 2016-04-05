@@ -26,7 +26,6 @@ exports.admin_login = function (req, res, next) {
             res.json({msg: 'err', content: '数据库错误'});
 
         }
-        ;
         if (rows.length >= 1) {
             res.json({msg: 'success', content: '登录成功'});
 

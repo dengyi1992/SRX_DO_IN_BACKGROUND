@@ -130,7 +130,8 @@ var config = {
      * 错误
      */
     err_params: {msg: "err_params", content: "参数错误"},
-    err_database: {msg: "err_database", content: "数据库错误"}
+    err_database: {msg: "err_database", content: "数据库错误"},
+    err_userinfo: {msg: "err_userinfo", content: "用户信息错误"}
 
 };
 

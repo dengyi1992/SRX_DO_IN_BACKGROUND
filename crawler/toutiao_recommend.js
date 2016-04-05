@@ -3,7 +3,6 @@
  *@type {*|exports|module.exports}
  */
 var express = require('express');
-var router = express.Router();
 var cheerio = require('cheerio');
 var request = require('request');
 var EventEmitter = require('events').EventEmitter;
@@ -28,19 +27,22 @@ var typeslast = "news_entertainment";
 
 /GET users listing. */
 exports.toutiao = function (req, res, next) {
-    if (CheckUtils.ifUndefined(req.query.type)){
-        res.json({msg:"err_params",content:"参数错误"});
+    if (CheckUtils.ifUndefined(req.query.type)) {
+        res.json({msg: "err_params", content: "参数错误"});
         return;
     }
-    typeslast=req.query.type;
+    typeslast = req.query.type;
+    var timestamp = (new Date()).valueOf();
+
     var options = {
-        url: config.toutiao_api_url + typesname + typeslast,
+        url: config.toutiao_api_url + typesname + typeslast + "&_=" + timestamp,
         method: 'GET',
         encoding: null
 
     };
     var items = [];
     request(options, function (error, response, body) {
+        console.log(options.url);
         if (!error && response.statusCode == 200) {
             //返回请求页面的HTML
             //var result = iconv.convert(new Buffer(body, 'binary')).toString();

@@ -124,7 +124,8 @@ var config = {
     create_post_per_day: 1000, // 每个用户一天可以发的主题数
     create_reply_per_day: 1000, // 每个用户一天可以发的评论数
     visit_per_day: 1000, // 每个 ip 每天能访问的次数
-    toutiao_api_url: "http://toutiao.com/api/article/recent/?source=2&count=20&utm_source=toutiao&offset=0",
+    //http://toutiao.com/api/article/recent/?source=2&category=news_tech&max_behot_time=0&_=1459315170949
+    toutiao_api_url: "http://toutiao.com/api/article/recent/?source=2&max_behot_time=0",
 
     /**
      * 错误

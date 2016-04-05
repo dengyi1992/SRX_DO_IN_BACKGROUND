@@ -76,7 +76,7 @@ app.use(function(err, req, res, next) {
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(2999);
+server.listen(3002);
 io.on('connection', function (socket) {
     console.log("connection");
     socket.emit('dengyi',{deng:'这是测试数据'});

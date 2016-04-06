@@ -126,6 +126,7 @@ var config = {
     visit_per_day: 1000, // 每个 ip 每天能访问的次数
     //http://toutiao.com/api/article/recent/?source=2&category=news_tech&max_behot_time=0&_=1459315170949
     toutiao_api_url: "http://toutiao.com/api/article/recent/?source=2&max_behot_time=0",
+    baidu_rss:"http://news.baidu.com/n?cmd=4&tn=rss",
 
     /**
      * 错误

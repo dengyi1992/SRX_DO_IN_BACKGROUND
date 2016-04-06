@@ -9,6 +9,7 @@ var budejie = require('../crawler/budejie.js');
 var intime = require('../crawler/intime.js');
 var toutiao_common = require('../crawler/toutiao_common.js');
 var toutiao_recommend = require('../crawler/toutiao_recommend.js');
+var baidurrs=require('../crawler/baidurrs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -41,6 +42,8 @@ router.get('/toutiao_common',toutiao_common.toutiao_common);
 
 
 router.get('/toutiao_recommend',toutiao_recommend.toutiao);
+//百度rss
+router.get('/baidu',baidurrs.baidu);
 
 
 module.exports = router;

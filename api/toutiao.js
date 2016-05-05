@@ -30,7 +30,9 @@ exports.toutiaoapi=function (req, res, next) {
     var userAddSql = 'SELECT * FROM toutiao_'+tablename+' ORDER BY id desc limit '+limit_range+';';
 
     conn.query(userAddSql, function (err, rows, fields) {
-        if (err) throw err;
+        if (err) {
+            return res.json({msg:'err',message:err});
+        }
         var data = [];
         for (var i = 0; i < rows.length; i++) {
             data.push({

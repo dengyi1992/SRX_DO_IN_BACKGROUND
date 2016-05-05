@@ -22,7 +22,13 @@ var items = [];
 
 /* GET users listing. */
 exports.budejieapi=function (req, res, next) {
-    var userAddSql = 'SELECT * FROM budejie ORDER BY id desc limit 20;';
+
+    if (req.query.page==undefined){
+        return res.json({msg:'err',message:'参数异常'});
+    }
+    var page=req.query.page;
+    var limit_range=(page-1)*20+','+page*20;
+    var userAddSql = 'SELECT * FROM budejie ORDER BY id desc limit '+limit_range+';';
     conn.query(userAddSql, function (err, rows, fields) {
         if (err) throw err;
         var data = [];
@@ -42,8 +48,10 @@ exports.budejieapi=function (req, res, next) {
             msg: 'success',
             message: '成功',
             data: data
+        };
+        if (data.length==0){
+            return res.json({msg:'nodata',message:'没有更多的数据了'});
         }
-
         return res.jsonp(result);
     });
 

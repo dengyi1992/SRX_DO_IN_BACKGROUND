@@ -18,34 +18,29 @@ var conn = mysql.createConnection({
 });
 var EventEmitter = require('events').EventEmitter;
 var myEvents = new EventEmitter();
-var times = [];
+
 var count = 0;
-var schedule = require('node-schedule');
-var rule = new schedule.RecurrenceRule();
+
 
 exports.timeTask = function () {
-    rule.minute = times;
-    for (var i = 0; i < 60; i = i + 5) {
-        times.push(i);
-    }
+
+
     var userAddSql = 'SELECT * FROM tasksetting';
-    schedule.scheduleJob(rule, function () {
-        count = count + 1;
-        conn.query(userAddSql, function (err, rows, fields) {
-            if (err) throw err;
+    count = count + 1;
+    conn.query(userAddSql, function (err, rows, fields) {
+        if (err) throw err;
 
-            for (var i = 0; i < rows.length; i++) {
-                if (count / rows[i].cycle == 0) {
-                    myEvents.emit('newtask', rows[i].interfaceurl);
-                }
+        for (var i = 0; i < rows.length; i++) {
+            if (count % rows[i].cycle == 0) {
+                myEvents.emit('newtask', rows[i].interfaceurl,rows[i].interfacetag);
             }
+        }
 
 
-        });
     });
 };
 
-myEvents.on('newtask', function (url) {
+myEvents.on('newtask', function (url,tag) {
     var options1 = {
         method: 'GET',
         encoding: null,
@@ -53,6 +48,7 @@ myEvents.on('newtask', function (url) {
     };
     request(options1, function (error, response, body) {
         console.log(new Date());
+        messageEvents.emit('taskfinish',{message:'success',url:url,iname:tag,time:new Date()});
     });
 
 });

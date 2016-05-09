@@ -13,10 +13,15 @@ var users = require('./routes/users');
 var crawler = require('./routes/crawler');
 var api = require('./routes/api');
 var admin = require('./routes/admin');
+var timeTask = require('./controler/schedule_update');
 var session = require('express-session');
 var settings = require("./settings.js");
+var schedule = require('node-schedule');
+var rule = new schedule.RecurrenceRule();
+var times = [];
 var MongoStore = require('connect-mongo')(session);
 var app = express();
+
 var EventEmitter = require('events').EventEmitter;
 /**
  * 全局变量
@@ -96,6 +101,14 @@ app.use(function (err, req, res, next) {
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+rule.minute = times;
+for (var i = 0; i < 60; i = i + 1) {
+    times.push(i);
+}
+schedule.scheduleJob(rule, function () {
+    timeTask.timeTask();
+    console.log("------------"+new Date())
+});
 
 server.listen(3002);
 io.on('connection', function (socket) {

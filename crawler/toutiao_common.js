@@ -78,7 +78,6 @@ exports.toutiao_common= function (req, res, next) {
 
             }
             myEvents.emit('geted',items);
-            messageEvents.emit('taskfinish',{message:'success',iname:'头条',time:new Date()});
             res.send(items);
         };
 

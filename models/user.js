@@ -204,6 +204,9 @@ User.enPowerAdmin=function(name,callback){
                 if (err) {
                     return callback(err);//失败！返回 err 信息
                 }
+                if (!user){
+                    return callback('no User');
+                }
                 var collection = db.collection('users');
                 var wherestr={"name":name};
                 var updateStr={$set:{actived:true}};

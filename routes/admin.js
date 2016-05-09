@@ -99,7 +99,10 @@ router.post('/login', function (req, res) {
         res.json({'success': '登陆成功!', 'coll': user.user_collection, 'account': user.account});
     });
 });
-router.post('/enPowerAdminUser',function (req, res) {
+router.post('/enAdminUser',function (req, res) {
+    if (req.body.name==undefined){
+        return res.json({'err':'参数异常'})
+    }
     User.enPowerAdmin(req.body.name,function (err,result) {
         if (err){
             return res.json({'err':err})

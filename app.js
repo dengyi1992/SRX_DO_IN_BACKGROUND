@@ -54,8 +54,8 @@ app.use(session({
         port: settings.port,
         url: 'mongodb://localhost/guide'
     }),
-    resave: false,
-    saveUninitialized: true
+    resave: false
+
 
 }));
 app.use('/', routes);

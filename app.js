@@ -13,7 +13,9 @@ var users = require('./routes/users');
 var crawler = require('./routes/crawler');
 var api = require('./routes/api');
 var admin =require('./routes/admin');
-
+var session = require('express-session');
+var settings = require("./settings.js");
+var MongoStore = require('connect-mongo')(session);
 var app = express();
 var EventEmitter = require('events').EventEmitter;
 /**
@@ -33,7 +35,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+/**
+ * 会话模块
+ */
+app.use(session({
+    secret: settings.cookieSecret,
+    key: settings.db,//cookie name
+    cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days]
+    saveUninitialized: true,
+    store: new MongoStore({
+        db: settings.db,
+        host: settings.host,
+        port: settings.port,
+        url: 'mongodb://localhost/guide'
+    }),
+    resave: false,
+    saveUninitialized: true
 
+}));
 app.use('/', routes);
 app.use('/users', users);
 //爬虫

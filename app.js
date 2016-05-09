@@ -102,7 +102,7 @@ app.use(function (err, req, res, next) {
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 rule.minute = times;
-for (var i = 0; i < 60; i = i + 1) {
+for (var i = 0; i < 60; i = i + 10) {
     times.push(i);
 }
 schedule.scheduleJob(rule, function () {

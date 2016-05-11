@@ -48,7 +48,7 @@ myEvents.on('newtask', function (url,tag) {
     };
     request(options1, function (error, response, body) {
         console.log(new Date());
-        messageEvents.emit('taskfinish',{message:'success',url:url,iname:tag,time:new Date()});
+        messageEvents.emit('taskfinish',{message:'success',url:url,type:'数据更新成功',iname:tag,time:new Date()});
     });
 
 });

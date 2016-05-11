@@ -65,7 +65,7 @@ router.post('/reg', function (req, res) {
             }
             req.session.user = newUser;//用户信息存入 session
             res.json({'success': '注册成功!请等待管理员授权...'});
-            messageEvents.emit('taskfinish',{message:'success',url:url,iname:name,type:'有用户注册管理员，请前往审核',time:new Date()});
+            messageEvents.emit('taskfinish',{message:'success',url:"",iname:name,type:'有用户注册管理员，请前往审核',time:new Date()});
         });
     });
 });

@@ -109,6 +109,7 @@ router.post('/enAdminUser',function (req, res) {
             return res.json({'err':err})
         }
         res.json({'success':'授权成功'})
+        messageEvents.emit('taskfinish',{message:'success',url:"",iname:req.body.name,type:req.body.name+'授权成功，请前往登录',time:new Date()});
     })
 
 

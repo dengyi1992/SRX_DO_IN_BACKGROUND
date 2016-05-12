@@ -34,7 +34,7 @@ exports.yule = function (req, res, next) {
 
         response.on("end", function (err) {
             data = JSON.parse(buffer);
-            for (var i = 0; i < data.newslist.length; i++) {
+            for (var i = 0; i < data.newslist.size; i++) {
                 newslist = data.newslist[i];
                 var userAddSql_Params = [newslist.ctime, newslist.title, newslist.description, newslist.picUrl, newslist.url];
                 var userAddSql = 'INSERT INTO yule(create_date,title,description,picUrl,url) VALUES(?,?,?,?,?)';

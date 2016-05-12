@@ -8,6 +8,7 @@ var delete_data = require('../admin/delete_data.js');
 var router = express.Router();
 var multipart = require('connect-multiparty');
 var User = require("../models/user.js");
+var Record = require("../models/record.js");
 var crypto = require("crypto");
 var multipartMiddleware = multipart();
 var mysql = require('mysql');
@@ -83,15 +84,7 @@ router.post('/reg', function (req, res) {
         });
     });
 });
-// router.get('/login', checkNotLogin);
-// // router.get('/login', function (req, res) {
-// //     res.render('login', {
-// //         title: '登录',
-// //         user: req.session.user,
-// //         success: req.flash('success').toString(),
-// //         error: req.flash('error').toString()
-//     });
-// });
+
 router.post('/login', checkNotLogin);
 router.post('/login', function (req, res) {
     //生成密码的 md5 值
@@ -114,7 +107,9 @@ router.post('/login', function (req, res) {
         res.json({'success': '登陆成功!', 'coll': user.user_collection, 'account': user.account});
     });
 });
+router.post('/enAdminUser', checkLogin);
 router.post('/enAdminUser', function (req, res) {
+    var name = req.session.user.name;
     if (req.body.name == undefined) {
         return res.json({'err': '参数异常'})
     }
@@ -122,15 +117,30 @@ router.post('/enAdminUser', function (req, res) {
         if (err) {
             return res.json({'err': err})
         }
-        res.json({'success': '授权成功'})
-        messageEvents.emit('taskfinish', {
-            message: 'success',
-            url: "",
-            iname: req.body.name,
-            type: req.body.name + '授权成功，请前往登录',
-            messageType: 'useractived',
-            time: new Date()
+        var newRecord = new Record({
+            operator: name,
+            operatortype: 'enAdminUser',
+            operate: name + "给" + req.body.name + '授权了'
         });
+        newRecord.save(function (err, record) {
+            if (err) {
+                res.json({'error': err});
+            }
+            res.json({
+                'success': '给' + req.body.name +
+                '授权成功'
+            });
+
+            messageEvents.emit('taskfinish', {
+                message: 'success',
+                url: "",
+                iname: name,
+                messageType: 'useractived',
+                type: name + "给" + req.body.name + '授权成功',
+                time: new Date()
+            });
+        });
+
     })
 
 
@@ -166,22 +176,53 @@ router.get('/logout', function (req, res) {
 
 router.get('/clearTable', checkLogin);
 router.get('/clearTable', function (req, res) {
-    var user = req.session.user;
-    var tablename=req.query.tablename;
+    var name = req.session.user.name;
+    var tablename = req.query.tablename;
     /**
      * 验证通过
      */
     var DELETE_SQL = "DELETE FROM " + tablename + " where 1";
+    var newRecord = new Record({
+        operator: name,
+        operatortype: 'database',
+        operate: name + "清空了表" + tablename
+    });
     conn.query(DELETE_SQL, function (err, result) {
         if (err) {
 
             res.json({err: err});
         } else {
-            res.json({success: '数据清除成功！'})
+            newRecord.save(function (err, record) {
+                if (err) {
+                    res.json({'error': err});
+                }
+                res.json({success: tablename + '数据清除成功！'});
+                messageEvents.emit('taskfinish', {
+                    message: 'success',
+                    url: "",
+                    iname: name,
+                    messageType: 'database',
+                    type: name + "清空了表" + tablename,
+                    time: new Date()
+                });
+            });
+
         }
 
     });
 
+});
+/**
+ * 获取所有的操作记录
+ */
+router.get('/getRecord', checkLogin);
+router.get('/getRecord', function (req, res) {
+    Record.getAll(function (err, result) {
+        if (err) {
+            return res.json({err: err})
+        }
+        res.json({'success': result})
+    })
 });
 function checkLogin(req, res, next) {
     if (!req.session.user) {

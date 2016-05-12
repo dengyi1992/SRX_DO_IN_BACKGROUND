@@ -22,7 +22,6 @@ exports.deleteDataBase = function (req, res, next) {
     var name = req.body.name;
     var password = req.body.password;
     var tablename = req.body.tablename;
-    var ifexist = login_admin.select_user(name, password)
     if (true) {
         /**
          * 验证通过

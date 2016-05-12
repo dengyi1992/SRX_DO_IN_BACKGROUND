@@ -10,7 +10,14 @@ var multipart = require('connect-multiparty');
 var User = require("../models/user.js");
 var crypto = require("crypto");
 var multipartMiddleware = multipart();
-
+var mysql = require('mysql');
+var conn = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'dengyi',
+    database: 'srx',
+    port: 3306
+});
 /* GET home page. */
 router.get('/', function (req, res, next) {
     //管理基本信息
@@ -65,7 +72,14 @@ router.post('/reg', function (req, res) {
             }
             req.session.user = newUser;//用户信息存入 session
             res.json({'success': '注册成功!请等待管理员授权...'});
-            messageEvents.emit('taskfinish',{message:'success',url:"",iname:name,messageType:'userregister',type:'有用户注册管理员，请前往审核',time:new Date()});
+            messageEvents.emit('taskfinish', {
+                message: 'success',
+                url: "",
+                iname: name,
+                messageType: 'userregister',
+                type: '有用户注册管理员，请前往审核',
+                time: new Date()
+            });
         });
     });
 });
@@ -92,7 +106,7 @@ router.post('/login', function (req, res) {
         if (user.password != password) {
             return res.json({'error': '密码错误!'});
         }
-        if (user.actived!=true){
+        if (user.actived != true) {
             return res.json({'error': '请等待管理员授权...'});
         }
         //用户名密码都匹配后，将用户信息存入 session
@@ -100,16 +114,23 @@ router.post('/login', function (req, res) {
         res.json({'success': '登陆成功!', 'coll': user.user_collection, 'account': user.account});
     });
 });
-router.post('/enAdminUser',function (req, res) {
-    if (req.body.name==undefined){
-        return res.json({'err':'参数异常'})
+router.post('/enAdminUser', function (req, res) {
+    if (req.body.name == undefined) {
+        return res.json({'err': '参数异常'})
     }
-    User.enPowerAdmin(req.body.name,function (err,result) {
-        if (err){
-            return res.json({'err':err})
+    User.enPowerAdmin(req.body.name, function (err, result) {
+        if (err) {
+            return res.json({'err': err})
         }
-        res.json({'success':'授权成功'})
-        messageEvents.emit('taskfinish',{message:'success',url:"",iname:req.body.name,type:req.body.name+'授权成功，请前往登录',messageType:'useractived',time:new Date()});
+        res.json({'success': '授权成功'})
+        messageEvents.emit('taskfinish', {
+            message: 'success',
+            url: "",
+            iname: req.body.name,
+            type: req.body.name + '授权成功，请前往登录',
+            messageType: 'useractived',
+            time: new Date()
+        });
     })
 
 
@@ -141,6 +162,26 @@ router.get('/logout', checkLogin);
 router.get('/logout', function (req, res) {
     req.session.user = null;
     res.json({'success': '登出成功!'});
+});
+
+router.get('/clearTable', checkLogin);
+router.get('/clearTable', function (req, res) {
+    var user = req.session.user;
+    var tablename=req.query.tablename;
+    /**
+     * 验证通过
+     */
+    var DELETE_SQL = "DELETE FROM " + tablename + " where 1";
+    conn.query(DELETE_SQL, function (err, result) {
+        if (err) {
+
+            res.json({err: err});
+        } else {
+            res.json({success: '数据清除成功！'})
+        }
+
+    });
+
 });
 function checkLogin(req, res, next) {
     if (!req.session.user) {

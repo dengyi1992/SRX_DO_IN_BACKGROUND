@@ -65,7 +65,7 @@ router.post('/reg', function (req, res) {
             }
             req.session.user = newUser;//用户信息存入 session
             res.json({'success': '注册成功!请等待管理员授权...'});
-            messageEvents.emit('taskfinish',{message:'success',url:"",iname:name,type:'有用户注册管理员，请前往审核',time:new Date()});
+            messageEvents.emit('taskfinish',{message:'success',url:"",iname:name,messageType:'userregister',type:'有用户注册管理员，请前往审核',time:new Date()});
         });
     });
 });
@@ -109,7 +109,7 @@ router.post('/enAdminUser',function (req, res) {
             return res.json({'err':err})
         }
         res.json({'success':'授权成功'})
-        messageEvents.emit('taskfinish',{message:'success',url:"",iname:req.body.name,type:req.body.name+'授权成功，请前往登录',time:new Date()});
+        messageEvents.emit('taskfinish',{message:'success',url:"",iname:req.body.name,type:req.body.name+'授权成功，请前往登录',messageType:'useractived',time:new Date()});
     })
 
 

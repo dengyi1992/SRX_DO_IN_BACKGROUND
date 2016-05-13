@@ -9,6 +9,8 @@ var router = express.Router();
 var multipart = require('connect-multiparty');
 var User = require("../models/user.js");
 var Record = require("../models/record.js");
+var ClientUser = require("../models/clientUser.js");
+
 var crypto = require("crypto");
 var multipartMiddleware = multipart();
 var mysql = require('mysql');
@@ -218,6 +220,18 @@ router.get('/clearTable', function (req, res) {
 router.get('/getRecord', checkLogin);
 router.get('/getRecord', function (req, res) {
     Record.getAll(function (err, result) {
+        if (err) {
+            return res.json({err: err})
+        }
+        res.json({'success': result})
+    })
+});
+/**
+ * 获取所有客户端用户
+ */
+router.get('/getUser',checkLogin);
+router.get('/getUser',function (req,res) {
+    ClientUser.getAll(function (err, result) {
         if (err) {
             return res.json({err: err})
         }

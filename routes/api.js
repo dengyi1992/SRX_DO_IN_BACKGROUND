@@ -5,13 +5,41 @@ var qiubai = require('../api/qiubai.js');
 var recommend = require('../api/recommend.js');
 var toutiao = require('../api/toutiao.js');
 var yidian = require('../api/yidian.js');
+var ClientUser = require('../models/clientUser.js');
+
+
 var router = express.Router();
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    //获取所有的api的基本信息
-  res.render('index', { title: 'api' });
+    if (req.query.devid==undefined|req.query.usertype==undefined){
+        return res.json({error:'参数异常'});
+    }
+    //获取用户信息
+    var devid = req.query.devid;
+    var usertype = req.query.usertype;
+    var clientUser = new ClientUser({
+        devId:devid,
+        type:usertype
+    });
+    //检查用户名是否已经存在
+    ClientUser.get(clientUser.devId, function (err, clientUser1) {
+        if (err) {
+            return res.json({'error': err});
+        }
+        if (clientUser1) {
+            return res.json({'success': '用户已存在!'});
+        }
+        //如果不存在则新增用户
+        clientUser.save(function (err, clientUser) {
+            if (err) {
+                res.json({'error': err});
+            }
+            res.json({'success':'成功'});
+        });
+    });
+
 });
 //不得姐api
 router.get('/budejie',budejie.budejieapi);

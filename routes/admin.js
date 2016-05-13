@@ -29,6 +29,7 @@ router.get('/', function (req, res, next) {
 //所有的数据库表信息的概述
 router.get('/databaseinfo', database_info.databaseinfo);
 //任务设置
+router.post('/tasksetting',checkLogin);
 router.post('/tasksetting', tasksetting.tasksetting);
 //登录
 router.post('/adminlogin', login_admin.admin_login);

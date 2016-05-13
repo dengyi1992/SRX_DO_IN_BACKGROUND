@@ -63,7 +63,6 @@ exports.zanker=function (req, res, next) {
 
         }
         res.send(items);
-        myEvents.emit('geted',items);
     }
 
 
@@ -78,7 +77,7 @@ myEvents.on('geted', function (items) {
         var userAddSql = '';
         if (items[i].imgnums == 0) {
             userAddSql_Params = [items[i].title, items[i].url, items[i].imgnums];
-            userAddSql = 'INSERT INTO toutiao_movie(title,url,imgnums) VALUES(?,?,0)';
+            userAddSql = 'INSERT INTO zane(title,url,imgnums) VALUES(?,?,0)';
         } else {
             userAddSql_Params = [items[i].title, items[i].url, items[i].imgurl];
             userAddSql = 'INSERT INTO toutiao_movie(title,url,imgnums,imgurl) VALUES(?,?,1,?)';

@@ -67,7 +67,9 @@ exports.toutiaov2=function(req,res,next){
         return;
     }
     var tablename="toutiao_"+req.query.type;
-    var selectString="SELECT * FROM "+tablename+" ORDER BY id desc limit 20";
+    var page=req.query.page;
+    var limit_range=(page-1)*20+','+page*20;
+    var selectString="SELECT * FROM "+tablename+" ORDER BY id desc limit " + limit_range+"";
     conn.query(selectString,function(err,rows,fields){
        if (err){
            res.json(config.err_database);

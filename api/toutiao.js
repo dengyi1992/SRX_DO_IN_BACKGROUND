@@ -78,7 +78,7 @@ exports.toutiaov2=function(req,res,next){
            var data = [];
            for (var i = 0; i < rows.length; i++) {
                data.push({
-                   data: JSON.parse(rows[i].jsonString)
+                   jsonString: JSON.parse(rows[i].jsonString)
 
                });
            }

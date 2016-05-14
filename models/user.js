@@ -207,6 +207,9 @@ User.enPowerAdmin=function(name,callback){
                 if (!user){
                     return callback('no User');
                 }
+                if (user.actived){
+                    return callback('already actived');
+                }
                 var collection = db.collection('users');
                 var wherestr={"name":name};
                 var updateStr={$set:{actived:true}};

@@ -107,10 +107,11 @@ for (var i = 0; i < 60; i = i + 10) {
 }
 schedule.scheduleJob(rule, function () {
     timeTask.timeTask();
-    console.log("------------"+new Date())
+    console.log("------------" + new Date())
 });
 
 server.listen(3002);
+
 io.on('connection', function (socket) {
     console.log("connection");
     socket.emit('dengyi', {deng: '这是测试数据'});
@@ -121,6 +122,22 @@ io.on('connection', function (socket) {
     messageEvents.on('taskfinish', function (data) {
         console.log(data);
         socket.emit('taskfinish', data);
+    });
+
+    messageEvents.on('pushToUser', function (data) {
+        console.log(data);
+        var to = parseInt(data.to);
+        for (var i = 0; i <20; i++) {
+            var number = to & parseInt(Math.pow(2, i));
+            if (number > 0) {
+                console.log(i)
+                socket.broadcast.emit('type'+i,data.content);
+                /**
+                 * type0-type19
+                 */
+            }
+
+        }
     });
 });
 

@@ -242,13 +242,15 @@ router.get('/getUser', function (req, res) {
 /**
  * 推送消息
  */
-router.get('/push', checkLogin);
-router.get('/push', function (req, res) {
+router.post('/push', checkLogin);
+router.post('/push', function (req, res) {
+    var to = req.body.TO;
+    var content = req.body.content;
     var name = req.session.user.name;
     var newRecord = new Record({
         operator: name,
         operatortype: 'push',
-        operate: name + "推送给客户端一条消息"
+        operate: name + "推送给客户端一条消息"+"消息码："+to+"内容："+content
     });
     newRecord.save(function (err, record) {
         if (err) {
@@ -259,9 +261,14 @@ router.get('/push', function (req, res) {
             url: "",
             iname: name,
             messageType: 'push',
-            type: name + "推送给客户端一条消息",
+            type: name + "推送给客户端一条消息"+"消息码："+to+"内容："+content,
             time: new Date()
         });
+    });
+    messageEvents.emit('pushToUser', {
+        to: to,
+        content:content,
+        time: new Date()
     });
     res.json({'success': 'copyThat'})
 });

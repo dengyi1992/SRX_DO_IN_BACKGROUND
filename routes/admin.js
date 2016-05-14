@@ -29,7 +29,7 @@ router.get('/', function (req, res, next) {
 //所有的数据库表信息的概述
 router.get('/databaseinfo', database_info.databaseinfo);
 //任务设置
-router.post('/tasksetting',checkLogin);
+router.post('/tasksetting', checkLogin);
 router.post('/tasksetting', tasksetting.tasksetting);
 //登录
 router.post('/adminlogin', login_admin.admin_login);
@@ -230,8 +230,8 @@ router.get('/getRecord', function (req, res) {
 /**
  * 获取所有客户端用户
  */
-router.get('/getUser',checkLogin);
-router.get('/getUser',function (req,res) {
+router.get('/getUser', checkLogin);
+router.get('/getUser', function (req, res) {
     ClientUser.getAll(function (err, result) {
         if (err) {
             return res.json({err: err})
@@ -239,6 +239,33 @@ router.get('/getUser',function (req,res) {
         res.json({'success': result})
     })
 });
+/**
+ * 推送消息
+ */
+router.get('/push', checkLogin);
+router.get('/push', function (req, res) {
+    var name = req.session.user.name;
+    var newRecord = new Record({
+        operator: name,
+        operatortype: 'push',
+        operate: name + "推送给客户端一条消息"
+    });
+    newRecord.save(function (err, record) {
+        if (err) {
+            res.json({'error': err});
+        }
+        messageEvents.emit('taskfinish', {
+            message: 'success',
+            url: "",
+            iname: name,
+            messageType: 'push',
+            type: name + "推送给客户端一条消息",
+            time: new Date()
+        });
+    });
+    res.json({'success': 'copyThat'})
+});
+
 function checkLogin(req, res, next) {
     if (!req.session.user) {
         /**

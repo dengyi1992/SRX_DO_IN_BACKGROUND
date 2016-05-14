@@ -122,7 +122,6 @@ io.on('connection', function (socket) {
         console.log(data);
         socket.emit('taskfinish', data);
     });
-
-
 });
+
 module.exports = app;
